@@ -2,83 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Smart PG Finder AI</title>
+    <title>AI Chatbot</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center">
+<body class="bg-gradient-to-r from-blue-500 to-purple-600 min-h-screen flex items-center justify-center">
 
-    <div class="bg-white w-[400px] rounded-2xl shadow-2xl p-6">
-        
-        <!-- Heading -->
-        <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">
-            🤖 Smart PG Finder
-        </h1>
+<div class="bg-white w-[420px] rounded-2xl shadow-2xl p-5">
 
-        <!-- Input -->
-        <div class="flex gap-2">
-            <input 
-                id="query" 
-                type="text" 
-                placeholder="Search PG (e.g. cheap pg near metro)" 
-                class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <button 
-                onclick="search()" 
-                class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
-            >
-                Search
-            </button>
-        </div>
+    <h1 class="text-xl font-bold text-center mb-4">🤖 AI Chatbot</h1>
 
-        <!-- Chat Box -->
-        <div id="chatBox" class="mt-4 h-[300px] overflow-y-auto bg-gray-100 p-3 rounded-lg text-sm space-y-2">
-        </div>
+    <div id="chatBox" class="h-[320px] overflow-y-auto bg-gray-100 p-3 rounded-lg space-y-2"></div>
 
+    <div class="flex gap-2 mt-3">
+        <input id="input" type="text" placeholder="Type message..."
+            class="flex-1 px-3 py-2 border rounded-lg focus:outline-none">
+        <button onclick="sendMessage()"
+            class="bg-blue-600 text-white px-4 rounded-lg">Send</button>
     </div>
 
+</div>
+
 <script>
-async function search() {
-    const query = document.getElementById("query").value;
-
-    if (!query) return;
-
+async function sendMessage() {
+    const input = document.getElementById("input");
     const chatBox = document.getElementById("chatBox");
+
+    const message = input.value;
+    if (!message) return;
 
     // User message
     chatBox.innerHTML += `
         <div class="text-right">
-            <span class="bg-purple-600 text-white px-3 py-1 rounded-lg inline-block">
-                ${query}
-            </span>
+            <span class="bg-blue-600 text-white px-3 py-1 rounded-lg break-words max-w-[80%] inline-block">${message}</span>
         </div>
     `;
 
-    // Fetch from backend
-    const res = await fetch("https://endee-a-i-project.onrender.com/ask", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ question: query })
-    });
+    input.value = "";
 
-    const data = await res.json();
-
-    // Bot response
+    // Loading
+    const id = "loading" + Date.now();
     chatBox.innerHTML += `
-        <div class="text-left">
-            <span class="bg-gray-300 text-black px-3 py-2 rounded-lg inline-block whitespace-pre-line">
-                ${data.answer}
-            </span>
+        <div id="${id}" class="text-left">
+            <span class="bg-gray-300 px-3 py-1 rounded-lg">🤖 Thinking...</span>
         </div>
     `;
 
-    // Auto scroll
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Clear input
-    document.getElementById("query").value = "";
+    try {
+        const res = await fetch("http://localhost:3000/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+
+        document.getElementById(id).remove();
+
+        chatBox.innerHTML += `
+            <div class="text-left">
+                <span class="bg-gray-300 px-3 py-2 rounded-lg whitespace-pre-line break-words max-w-[80%] inline-block">${data.reply}</span>
+            </div>
+        `;
+
+    } catch {
+        document.getElementById(id).remove();
+
+        chatBox.innerHTML += `
+            <div class="text-left">
+                <span class="bg-red-300 px-3 py-1 rounded-lg">Error connecting server</span>
+            </div>
+        `;
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 </script>
 
