@@ -1,16 +1,17 @@
-# 🤖 Smart PG Finder AI
+# 🤖 AI Chatbot (Full Stack Project)
 
 ## 📌 Overview
-Smart PG Finder AI is a web-based application that helps users find PGs, hostels, and flats using intelligent search. It simulates AI-based recommendations using keyword-based semantic matching.
+AI Chatbot is a web-based application that allows users to interact with an intelligent assistant in real time. The chatbot processes user queries and generates smart responses using AI APIs.
 
 ---
 
 ## 🚀 Features
-- 🔍 Smart search (semantic keyword matching)
-- 🤖 AI-like response system
-- 💬 Chat-style UI
-- ⚡ Fast and lightweight
+- 💬 Real-time chat interface
+- 🤖 AI-powered responses
+- ⚡ Fast and responsive UI
 - 🌐 REST API (Node.js + Express)
+- 🔐 Secure API key handling using environment variables
+- 📱 Clean and modern UI (Tailwind CSS)
 
 ---
 
@@ -18,19 +19,26 @@ Smart PG Finder AI is a web-based application that helps users find PGs, hostels
 - Node.js
 - Express.js
 - HTML + Tailwind CSS
-- JavaScript
+- JavaScript (Frontend + Backend)
+- OpenRouter API (AI Integration)
 
 ---
 
-## 🧠 How it Works (RAG Concept)
-- User enters query
-- System retrieves relevant PG data
-- Generates AI-like response based on intent
+## 🧠 How it Works
+1. User enters a message in the chat UI  
+2. Frontend sends request to backend API (`/chat`)  
+3. Backend processes the request  
+4. AI API generates a response  
+5. Response is sent back and displayed in chat  
 
 ---
 
-## ▶️ Run Locally
+## 🔌 API Endpoint
 
-```bash
-npm install
-node server.js
+### POST `/chat`
+
+**Request:**
+```json
+{
+  "message": "Hello"
+}
